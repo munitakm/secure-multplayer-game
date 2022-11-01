@@ -1,5 +1,7 @@
 body {
   margin: 20px;
+  background-color: #666699;
+  color: white;
 }
 
 code {
@@ -7,6 +9,10 @@ code {
 }
 
 canvas {
+  border: 4px;
+  border-style: solid;
+  border-color: white; 
+  background-color: grey;
   margin: auto;
 }
 

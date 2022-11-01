@@ -16,6 +16,7 @@ app.use('/assets', express.static(process.cwd() + '/assets'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 //For FCC testing purposes and enables user to connect from outside the hosting platform
 app.use(cors({origin: '*'})); 
 
@@ -52,5 +53,36 @@ const server = app.listen(portNum, () => {
     }, 1500);
   }
 });
+//-----GAME LOGIC		
+
+var currentPlayers = [];
+var playersInfo = [];
+
+const io = socket(server);
+//when player enter
+io.on('connection', (socket) => {
+	console.log("someone connected id: "+ socket.id);
+	currentPlayers.push(socket.id)
+	console.log(currentPlayers);
+	socket.on('enterplayer', player => {
+		console.log(player);
+		playersInfo.push(player);
+		console.log(playersInfo);
+	});
+//when player leave
+	socket.on("disconnect", () => {
+		console.log("someone disconnected " + socket.id);
+		currentPlayers  = currentPlayers.filter(n => {
+			if (socket.id != n)
+				return socket.id
+		})
+		delete playersInfo[socket.id];
+		console.log(playersInfo);
+		console.log(currentPlayers);
+		socket.emit('leaveplayer', socket.id)
+	})
+	let d = "teste"
+	socket.broadcast.emit('player info', playersInfo)
+})
 
 module.exports = app; // For testing
