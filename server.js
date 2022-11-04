@@ -76,13 +76,16 @@ io.on('connection', (socket) => {
 			if (socket.id != n)
 				return socket.id
 		})
-		delete playersInfo[socket.id];
+		playersInfo = playersInfo.filter(j => {
+			if(j.id != socket.id)
+				return j;
+		})
 		console.log(playersInfo);
 		console.log(currentPlayers);
-		socket.emit('leaveplayer', socket.id)
+		socket.emit('leaveplayer', socket.id);
 	})
-	let d = "teste"
-	socket.broadcast.emit('player info', playersInfo)
+	let c = "teste";
+	socket.emit('player info', playersInfo)
 })
 
 module.exports = app; // For testing

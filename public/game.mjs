@@ -9,6 +9,7 @@ canvas.width = 640;
 canvas.height = 480;
 
 let player;
+let opponents = [];
 
 function randomPosition() {
 	return { 
@@ -23,11 +24,26 @@ socket.on('connect', () => {
 	socket.emit('enterplayer', player);
 })
 
-console.log(player);
+socket.on('player info', (playersInfo) => {
+	opponents = playersInfo;
+	console.log("rolou", playersInfo, opponents);
+})
+
+console.log("estes são os ", opponents)
 
 function renderAll() {
+	//render avatar
 	ctx.fillStyle="red";
 	player.draw(ctx);
+
+	//render opponents
+	opponents.forEach(enemy => {
+		if(enemy.id !== player.id){
+			ctx.fillStyle="green";
+			ctx.fillRect(enemy.x * 20, enemy.y * 20, 20, 20);
+		}
+	})
+
 
 	requestAnimationFrame(renderAll)
 }
