@@ -84,6 +84,11 @@ io.on('connection', (socket) => {
 		console.log(currentPlayers);
 		socket.emit('leaveplayer', socket.id);
 	})
+//Update Player When Move
+	socket.on("playerMoved", playermoved => {
+		console.log("chegou o movimento no servidor", playermoved)
+		socket.broadcast.emit("move", playermoved)
+	})
 	let c = "teste";
 	socket.emit('player info', playersInfo)
 })

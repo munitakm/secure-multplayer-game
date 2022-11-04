@@ -20,16 +20,50 @@ function randomPosition() {
 socket.on('connect', () => {
 	let c = randomPosition();
 	player = new Player({x: c.x, y: c.y, score: 0, id: socket.id})
-
 	socket.emit('enterplayer', player);
 })
 
 socket.on('player info', (playersInfo) => {
 	opponents = playersInfo;
-	console.log("rolou", playersInfo, opponents);
 })
 
-console.log("estes são os ", opponents)
+//Moving the player
+document.addEventListener('keydown', (key) => {
+	switch (key.code) {
+		case "KeyW":
+			player.dir = "up";
+			break;
+		case "KeyS":
+			player.dir = "down";
+			break;
+		case "KeyA":
+			player.dir = "left";
+			break;
+		case "KeyD":
+			player.dir = "right";
+			break;
+		default:
+			player.dir = null;			
+	}
+	socket.emit('playerMoved', player);
+});
+document.addEventListener('keyup', (key) => {
+	if( key.code == "KeyW" ||
+		key.code == "KeyS" ||
+		key.code == "KeyA" ||
+		key.code == "KeyD"
+	)
+	player.dir = null;
+	socket.emit('playerMoved', player);
+});
+//Opponent Moved
+	socket.on("move", opponent => {
+		opponents.forEach(enemy => {
+			if(enemy.id == opponent.id)
+				enemy = opponent;
+				console.log(opponent)
+		})	
+})
 
 function renderAll() {
 	//render avatar
@@ -40,7 +74,7 @@ function renderAll() {
 	opponents.forEach(enemy => {
 		if(enemy.id !== player.id){
 			ctx.fillStyle="green";
-			ctx.fillRect(enemy.x * 20, enemy.y * 20, 20, 20);
+			ctx.fillRect(enemy.x *20, enemy.y * 20, 20, 20)	
 		}
 	})
 
